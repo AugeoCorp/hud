@@ -1,0 +1,35 @@
+.stage {
+	display: grid;
+	grid-template-columns: 1fr;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	color: #fff;
+	background: #000;
+}
+
+.eye {
+	--eye: 0;
+	position: relative;
+	overflow: hidden;
+}
+
+.eye[data-eye="right"] {
+	display: none;
+}
+
+/* Full SBS: two 16:9 eyes side by side make a 32:9 viewport. */
+@media (min-aspect-ratio: 3 / 1) {
+	.stage {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.eye[data-eye="left"] {
+		--eye: -1;
+	}
+
+	.eye[data-eye="right"] {
+		--eye: 1;
+		display: block;
+	}
+}
