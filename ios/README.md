@@ -4,6 +4,10 @@ A thin iOS app that shows the HUD's Next.js pages full screen on XR glasses
 plugged into the phone over USB-C. The phone screen is the controller; for now
 it only sets the address and shows what display is connected.
 
+Keep it thin. The app puts a web view on the glasses and remembers the address.
+Everything else, including deciding between 2D and 3D, belongs in the page, so
+an Android port stays small.
+
 Needs iOS 27 (it uses `UISceneAccessory`, which iOS 27 requires to get a glasses
 scene) and a phone with USB-C DisplayPort out: iPhone 15 or newer, not the 16e
 or Air.
@@ -27,10 +31,10 @@ thing to check if Full SBS doesn't show up as 3840×1080.
 
 ## Known gaps
 
-- `next dev` blocks its own JavaScript for any origin other than localhost. The
-  hello world page is HTML and CSS only so it works anyway. Pages that need
-  client JavaScript will need that address in `allowedDevOrigins` in
-  `next.config.ts`.
+- `next dev` refuses its hot reload connection from any origin other than
+  localhost, so pages won't live-reload on the phone. Add the address to
+  `allowedDevOrigins` in `next.config.ts` when that matters. Not yet checked
+  whether page scripts load; the hello world page doesn't need them.
 - No auth yet, and the dev server listens on every interface. Fine on a trusted
   network for a hello world, not for anything connected to an agent.
 - Half SBS isn't handled. Viture glasses only have Full SBS.

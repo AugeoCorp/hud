@@ -45,9 +45,8 @@ final class ControllerViewController: UIViewController, UITextFieldDelegate {
 			statusLabel.text = "No glasses connected"
 			return
 		}
-		let mode = size.width / size.height >= 3 ? "Full SBS 3D" : "2D"
-		statusLabel.text =
-			"Glasses: \(Int(size.width))×\(Int(size.height)), \(mode)"
+		// The page decides 2D or 3D from this size; the app only reports it.
+		statusLabel.text = "Glasses: \(Int(size.width))×\(Int(size.height))"
 	}
 
 	private func layout() {

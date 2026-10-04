@@ -13,7 +13,7 @@ export function StereoStage({ children }: { children: ReactNode }) {
 			<div className={styles.eye} data-eye="left">
 				{children}
 			</div>
-			<div className={styles.eye} data-eye="right" aria-hidden>
+			<div className={styles.eye} data-eye="right" inert>
 				{children}
 			</div>
 		</main>

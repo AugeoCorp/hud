@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { StereoStage } from "./StereoStage";
@@ -17,8 +17,10 @@ describe("<StereoStage />", () => {
 		expect(container.querySelectorAll("h1")).toHaveLength(2);
 	});
 
-	it("exposes only the left eye to accessibility", () => {
-		subject();
-		expect(screen.getAllByRole("heading")).toHaveLength(1);
+	it("keeps the right eye out of focus and accessibility", () => {
+		const { container } = subject();
+		expect(container.querySelector('[data-eye="right"]')).toHaveAttribute(
+			"inert",
+		);
 	});
 });

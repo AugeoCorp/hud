@@ -8,9 +8,7 @@ export default function Home() {
 	return (
 		<StereoStage>
 			<div className={styles.scene}>
-				<Layer depth={24} className={styles.panel}>
-					{null}
-				</Layer>
+				<Layer depth={24} className={styles.panel} />
 				<Layer depth={0} className={styles.message}>
 					<h1>Hello, world</h1>
 				</Layer>

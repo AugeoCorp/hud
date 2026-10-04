@@ -14,7 +14,7 @@ export function Layer({
 }: {
 	depth: number;
 	className?: string;
-	children: ReactNode;
+	children?: ReactNode;
 }) {
 	const style = { "--depth": depth } as CSSProperties;
 
