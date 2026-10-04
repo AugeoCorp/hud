@@ -17,7 +17,7 @@
 		"db:studio": "drizzle-kit studio",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "next typegen && tsc --noEmit",
 		"verify": "npm run test && npm run lint:fix && npm run typecheck"
 	},
 	"dependencies": {
