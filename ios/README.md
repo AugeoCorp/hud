@@ -29,6 +29,34 @@ The app logs every glasses display it gets, with its size and available modes,
 under the `display` category of `com.augeocorp.hud` in Console. That's the first
 thing to check if Full SBS doesn't show up as 3840×1080.
 
+## CI and TestFlight
+
+`.github/workflows/ios.yml` runs on changes under `ios/`, on GitHub's `xcode-27`
+macOS runner (a preview label as of October 2026).
+
+- **build** compiles the app with signing off. It needs no Apple account and
+  runs on every pull request.
+- **testflight** archives, signs and uploads to TestFlight on pushes to `main`.
+  It stays off until `APPLE_TEAM_ID` is set.
+
+To turn on TestFlight, once you have a paid Apple Developer account:
+
+1. In App Store Connect, create the app with bundle ID `com.augeocorp.hud`.
+2. Under Users and Access, Integrations, create a team API key with the Admin
+   role. Letting Xcode create signing certificates needs more than App Manager,
+   as far as we know, not yet checked. Download the `.p8` file; it can only be
+   downloaded once.
+3. In the GitHub repository settings, add:
+   - Variable `APPLE_TEAM_ID`: your 10-character team ID.
+   - Secret `ASC_KEY_ID`: the key ID.
+   - Secret `ASC_ISSUER_ID`: the issuer ID shown above the keys list.
+   - Secret `ASC_KEY_P8`: the full contents of the `.p8` file.
+4. Add yourself as an internal tester in TestFlight and install the TestFlight
+   app on your phone.
+
+Each upload uses the workflow run number as its build number. Xcode creates the
+signing certificate and profile itself through the API key.
+
 ## Known gaps
 
 - `next dev` refuses its hot reload connection from any origin other than

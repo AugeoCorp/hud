@@ -1,0 +1,89 @@
+name: iOS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+jobs:
+  # Compiles the app without signing. Needs no Apple account.
+  build:
+    runs-on: xcode-27
+    defaults:
+      run:
+        working-directory: ios
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Generate Xcode project
+        run: brew install xcodegen && xcodegen
+
+      - name: Build
+        run: >
+          xcodebuild build
+          -project HUD.xcodeproj
+          -scheme HUD
+          -destination "generic/platform=iOS"
+          CODE_SIGNING_ALLOWED=NO
+
+  # Signs and uploads to TestFlight. Off until the repository variable
+  # APPLE_TEAM_ID is set, along with the App Store Connect API key secrets.
+  testflight:
+    needs: build
+    if: github.ref == 'refs/heads/main' && vars.APPLE_TEAM_ID != ''
+    runs-on: xcode-27
+    defaults:
+      run:
+        working-directory: ios
+    env:
+      TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+      KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      BUILD_NUMBER: ${{ github.run_number }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Generate Xcode project
+        run: brew install xcodegen && xcodegen
+
+      - name: Write API key
+        run: printf '%s' "$ASC_KEY" > "$RUNNER_TEMP/AuthKey.p8"
+        env:
+          ASC_KEY: ${{ secrets.ASC_KEY_P8 }}
+
+      - name: Archive
+        run: >
+          xcodebuild archive
+          -project HUD.xcodeproj
+          -scheme HUD
+          -destination "generic/platform=iOS"
+          -archivePath "$RUNNER_TEMP/HUD.xcarchive"
+          -allowProvisioningUpdates
+          -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8"
+          -authenticationKeyID "$KEY_ID"
+          -authenticationKeyIssuerID "$ISSUER_ID"
+          DEVELOPMENT_TEAM="$TEAM_ID"
+          CURRENT_PROJECT_VERSION="$BUILD_NUMBER"
+
+      - name: Upload to TestFlight
+        run: >
+          xcodebuild -exportArchive
+          -archivePath "$RUNNER_TEMP/HUD.xcarchive"
+          -exportOptionsPlist ExportOptions.plist
+          -exportPath "$RUNNER_TEMP/export"
+          -allowProvisioningUpdates
+          -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8"
+          -authenticationKeyID "$KEY_ID"
+          -authenticationKeyIssuerID "$ISSUER_ID"
