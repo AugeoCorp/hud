@@ -1,0 +1,20 @@
+# Generate HUD.xcodeproj with `xcodegen` (brew install xcodegen).
+name: HUD
+options:
+  deploymentTarget:
+    iOS: "27.0"
+  indentWidth: 4
+  tabWidth: 4
+  usesTabs: true
+targets:
+  HUD:
+    type: application
+    platform: iOS
+    sources: [HUD]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.augeocorp.hud
+        INFOPLIST_FILE: HUD/Info.plist
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "6.0"
+        CODE_SIGN_STYLE: Automatic
