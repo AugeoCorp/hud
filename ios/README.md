@@ -36,8 +36,9 @@ macOS runner (a preview label as of October 2026).
 
 - **build** compiles the app with signing off. It needs no Apple account and
   runs on every pull request.
-- **testflight** archives, signs and uploads to TestFlight on pushes to `main`.
-  It stays off until `APPLE_TEAM_ID` is set.
+- **testflight** archives, signs and uploads to TestFlight on pushes to `main`,
+  or when you run the workflow by hand from the Actions tab. It stays off until
+  `APPLE_TEAM_ID` is set.
 
 To turn on TestFlight, once you have a paid Apple Developer account:
 

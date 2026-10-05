@@ -36,11 +36,14 @@ jobs:
           -destination "generic/platform=iOS"
           CODE_SIGNING_ALLOWED=NO
 
-  # Signs and uploads to TestFlight. Off until the repository variable
-  # APPLE_TEAM_ID is set, along with the App Store Connect API key secrets.
+  # Signs and uploads to TestFlight on pushes to main, or when started by hand
+  # from any branch. Off until the repository variable APPLE_TEAM_ID is set,
+  # along with the App Store Connect API key secrets.
   testflight:
     needs: build
-    if: github.ref == 'refs/heads/main' && vars.APPLE_TEAM_ID != ''
+    if: >
+      (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+      && vars.APPLE_TEAM_ID != ''
     runs-on: xcode-27
     defaults:
       run:
