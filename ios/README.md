@@ -31,32 +31,33 @@ thing to check if Full SBS doesn't show up as 3840×1080.
 
 ## CI and TestFlight
 
-`.github/workflows/ios.yml` runs on changes under `ios/`, on GitHub's `xcode-27`
-macOS runner (a preview label as of October 2026).
+Two separate things build the app:
 
-- **build** compiles the app with signing off. It needs no Apple account and
-  runs on every pull request.
-- **testflight** archives, signs and uploads to TestFlight on pushes to `main`,
-  or when you run the workflow by hand from the Actions tab. It stays off until
-  `APPLE_TEAM_ID` is set.
+- **GitHub Actions** (`.github/workflows/ios.yml`) compiles it with signing off
+  on every pull request that touches `ios/`, on GitHub's `xcode-27` macOS
+  runner. It needs no Apple account.
+- **Xcode Cloud** builds, signs and uploads to TestFlight. Apple handles the
+  signing, so no keys or secrets live in GitHub. Its workflow is configured in
+  Xcode and App Store Connect, not in this repository.
 
-To turn on TestFlight, once you have a paid Apple Developer account:
+The Xcode project is generated rather than committed, so Xcode Cloud runs
+`ci_scripts/ci_post_clone.sh` after cloning to install XcodeGen and generate it.
+
+To set up Xcode Cloud, once, on a Mac with Xcode 27:
 
 1. In App Store Connect, create the app with bundle ID `com.augeocorp.hud`.
-2. Under Users and Access, Integrations, create a team API key with the Admin
-   role. Letting Xcode create signing certificates needs more than App Manager,
-   as far as we know, not yet checked. Download the `.p8` file; it can only be
-   downloaded once.
-3. In the GitHub repository settings, add:
-   - Variable `APPLE_TEAM_ID`: your 10-character team ID.
-   - Secret `ASC_KEY_ID`: the key ID.
-   - Secret `ASC_ISSUER_ID`: the issuer ID shown above the keys list.
-   - Secret `ASC_KEY_P8`: the full contents of the `.p8` file.
-4. Add yourself as an internal tester in TestFlight and install the TestFlight
-   app on your phone.
+2. Generate and open the project: `brew install xcodegen`, then `xcodegen` in
+   this directory, then open `HUD.xcodeproj`.
+3. In Xcode, Product, Xcode Cloud, Create Workflow. Sign in with your developer
+   account and grant Xcode Cloud access to the GitHub repository. On the
+   AugeoCorp organization this installs Apple's GitHub app, which needs an
+   organization owner's approval.
+4. In the workflow, set the start condition (for example, changes to `main`),
+   add an Archive action for iOS, and add a TestFlight Internal Testing
+   post-action with a group that includes you.
+5. Install the TestFlight app on your phone.
 
-Each upload uses the workflow run number as its build number. Xcode creates the
-signing certificate and profile itself through the API key.
+Xcode Cloud sets its own build number on each build.
 
 ## Known gaps
 
