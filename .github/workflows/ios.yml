@@ -1,0 +1,38 @@
+name: iOS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+jobs:
+  # Compiles the app without signing. Needs no Apple account. Signed builds
+  # for TestFlight come from Xcode Cloud; see ios/README.md.
+  build:
+    runs-on: xcode-27
+    defaults:
+      run:
+        working-directory: ios
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Generate Xcode project
+        run: brew install xcodegen && xcodegen
+
+      - name: Build
+        run: >
+          xcodebuild build
+          -project HUD.xcodeproj
+          -scheme HUD
+          -destination "generic/platform=iOS"
+          CODE_SIGNING_ALLOWED=NO
