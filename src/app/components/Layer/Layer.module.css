@@ -1,0 +1,6 @@
+/* --eye comes from the enclosing StereoStage: -1 left, 1 right, 0 flat. */
+.layer {
+	position: absolute;
+	inset: 0;
+	transform: translateX(calc(var(--depth) * var(--eye, 0) * 0.5px));
+}
