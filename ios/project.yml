@@ -23,3 +23,4 @@ targets:
         # Xcode Cloud sets its own build number on each build.
         CURRENT_PROJECT_VERSION: "1"
         CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: AR764JHGZY
