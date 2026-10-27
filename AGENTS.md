@@ -12,6 +12,21 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # AGENTS.md
 
+## What this is
+
+A heads-up display for keeping up with a coding agent while away from the
+computer. This Next.js app serves the HUD pages. A thin native app on the phone
+(`ios/`, Android later) shows them full screen on XR glasses plugged in over
+USB-C, and the phone screen is the remote.
+
+- **Logic lives in the page.** The native apps only put a web view on the
+  glasses, remember the address and pass input through. Don't add features to
+  them that the page could do; every native line gets written twice.
+- **3D is layers.** `StereoStage` draws the page once per eye when the viewport
+  is Full SBS (32:9), and `Layer` shifts each plane by its depth. Text people
+  read sits at depth 0; use depth for panels, status and alerts.
+- The screen stays fixed in front of your eyes. No head tracking.
+
 ## Tech Stack
 
 - **Framework:** [Next.js](https://nextjs.org/) (App Router)
